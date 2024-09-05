@@ -32,7 +32,7 @@ class Dispatchable : public Data {
   common::Time GetTime() const override { return data_.time; }
   void AddToTrajectoryBuilder(
       mapping::TrajectoryBuilderInterface *const trajectory_builder) override {
-    trajectory_builder->AddSensorData(sensor_id_, data_);
+    trajectory_builder->AddSensorData(sensor_id_, data_); //how to connect with GlobalTrajectoryBuilder -> AddSensorData(...) ??
   }
   const DataType &data() const { return data_; }
 

@@ -59,7 +59,7 @@ void OrderedMultiQueue::MarkQueueAsFinished(const QueueKey& queue_key) {
   queue.finished = true;
   Dispatch();
 }
-
+//sw sensor data trasfer here (LAST)
 void OrderedMultiQueue::Add(const QueueKey& queue_key,
                             std::unique_ptr<Data> data) {
   auto it = queues_.find(queue_key);

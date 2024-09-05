@@ -21,9 +21,13 @@ message RealTimeCorrelativeScanMatcherOptions {
   // will be found.
   double linear_search_window = 1;
 
+  //double linear_search_window_slide = 1;
+
   // Minimum angular search window in which the best possible scan alignment
   // will be found.
   double angular_search_window = 2;
+  
+  //double angular_search_window_slide = 2;
 
   // Weights applied to each part of the score.
   double translation_delta_cost_weight = 3;

@@ -38,6 +38,10 @@ TRAJECTORY_BUILDER_2D = {
   real_time_correlative_scan_matcher = {
     linear_search_window = 0.1,
     angular_search_window = math.rad(20.),
+
+    -- linear_search_window_slide = 3,
+    -- angular_search_window_slide = math.rad(40.),
+
     translation_delta_cost_weight = 1e-1,
     rotation_delta_cost_weight = 1e-1,
   },

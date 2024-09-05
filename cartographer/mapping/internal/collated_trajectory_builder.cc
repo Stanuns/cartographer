@@ -54,7 +54,7 @@ CollatedTrajectoryBuilder::CollatedTrajectoryBuilder(
   sensor_collator_->AddTrajectory(
       trajectory_id, expected_sensor_id_strings,
       [this](const std::string& sensor_id, std::unique_ptr<sensor::Data> data) {
-        HandleCollatedSensorData(sensor_id, std::move(data));
+        HandleCollatedSensorData(sensor_id, std::move(data));//call_back 函数在此实现
       });
 }
 
@@ -62,7 +62,7 @@ void CollatedTrajectoryBuilder::AddData(std::unique_ptr<sensor::Data> data) {
   sensor_collator_->AddSensorData(trajectory_id_, std::move(data));
 }
 
-void CollatedTrajectoryBuilder::HandleCollatedSensorData(
+void CollatedTrajectoryBuilder::HandleCollatedSensorData( //sw
     const std::string& sensor_id, std::unique_ptr<sensor::Data> data) {
   auto it = rate_timers_.find(sensor_id);
   if (it == rate_timers_.end()) {

@@ -67,6 +67,10 @@ class RealTimeCorrelativeScanMatcher2D {
                const sensor::PointCloud& point_cloud, const Grid2D& grid,
                transform::Rigid2d* pose_estimate) const;
 
+  double MatchSlide(const transform::Rigid2d& initial_pose_estimate,
+                const sensor::PointCloud& point_cloud, const Grid2D& grid,
+                transform::Rigid2d* pose_estimate) const;
+
   // Computes the score for each Candidate2D in a collection. The cost is
   // computed as the sum of probabilities or normalized TSD values, different
   // from the Ceres CostFunctions: http://ceres-solver.org/modeling.html

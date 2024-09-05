@@ -150,12 +150,12 @@ NodeId PoseGraph2D::AppendNode(
   }
   return node_id;
 }
-
+//AddNode的主要:把一个TrajectoryNode的数据加入到PoseGraph维护的trajectory_nodes_这个容器中,并返回加入的节点的Node.  在global_trajectory_builder.AddSensorData() 中调用.
 NodeId PoseGraph2D::AddNode(
     std::shared_ptr<const TrajectoryNode::Data> constant_data,
     const int trajectory_id,
     const std::vector<std::shared_ptr<const Submap2D>>& insertion_submaps) {
-  const transform::Rigid3d optimized_pose(
+  const transform::Rigid3d optimized_pose( // 生成的 optimized_pose 就是该节点的绝对位姿
       GetLocalToGlobalTransform(trajectory_id) * constant_data->local_pose);
 
   const NodeId node_id = AppendNode(constant_data, trajectory_id,
@@ -163,10 +163,10 @@ NodeId PoseGraph2D::AddNode(
   // We have to check this here, because it might have changed by the time we
   // execute the lambda.
   const bool newly_finished_submap =
-      insertion_submaps.front()->insertion_finished();
-  AddWorkItem([=]() LOCKS_EXCLUDED(mutex_) {
+      insertion_submaps.front()->insertion_finished(); //检查 insertion_submaps 的第一个submap是否已经被finished了,如果被finished，那么我们需要计算一下约束并且进行一下全局优化
+  AddWorkItem([=]() LOCKS_EXCLUDED(mutex_) { //把工作交到了workItem中等待处理(通过线程池thread_pool处理)， 用到lamda表达式结果作为 AddWorkItem() 输入参数
     return ComputeConstraintsForNode(node_id, insertion_submaps,
-                                     newly_finished_submap);
+                                     newly_finished_submap); //这里主要看 1.AddWorkItem， 2.ComputeConstraintsForNode
   });
   return node_id;
 }
@@ -177,11 +177,11 @@ void PoseGraph2D::AddWorkItem(
   if (work_queue_ == nullptr) {
     work_queue_ = absl::make_unique<WorkQueue>();
     auto task = absl::make_unique<common::Task>();
-    task->SetWorkItem([this]() { DrainWorkQueue(); });
+    task->SetWorkItem([this]() { DrainWorkQueue(); }); // sw DrainWorkQueue()
     thread_pool_->Schedule(std::move(task));
   }
   const auto now = std::chrono::steady_clock::now();
-  work_queue_->push_back({now, work_item});
+  work_queue_->push_back({now, work_item}); // AddWorkItem  执行主要部分 work_item 就是 ComputeConstraintsForNode()
   kWorkQueueSizeMetric->Set(work_queue_->size());
   kWorkQueueDelayMetric->Set(
       std::chrono::duration_cast<std::chrono::duration<double>>(
@@ -516,7 +516,7 @@ void PoseGraph2D::HandleWorkQueue(
 
   DrainWorkQueue();
 }
-
+//sw 
 void PoseGraph2D::DrainWorkQueue() {
   bool process_work_queue = true;
   size_t work_queue_size;

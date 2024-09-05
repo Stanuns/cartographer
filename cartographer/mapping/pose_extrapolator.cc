@@ -153,6 +153,7 @@ Eigen::Quaterniond PoseExtrapolator::EstimateGravityOrientation(
   return imu_tracker.orientation();
 }
 
+//out: linear_velocity_from_poses_; angular_velocity_from_poses_
 void PoseExtrapolator::UpdateVelocitiesFromPoses() {
   if (timed_pose_queue_.size() < 2) {
     // We need two poses to estimate velocities.
@@ -204,6 +205,7 @@ void PoseExtrapolator::AdvanceImuTracker(const common::Time time,
     imu_tracker->AddImuAngularVelocityObservation(
         odometry_data_.size() < 2 ? angular_velocity_from_poses_
                                   : angular_velocity_from_odometry_);
+    LOG(WARNING) << "-----Debug-----Don't use imu odometry, odometry_data_.size():"<< odometry_data_.size() << ". ------";
     return;
   }
   if (imu_tracker->time() < imu_data_.front().time) {
@@ -215,6 +217,9 @@ void PoseExtrapolator::AdvanceImuTracker(const common::Time time,
       [](const sensor::ImuData& imu_data, const common::Time& time) {
         return imu_data.time < time;
       });
+  /**
+   * use imu_data from imu_tracker—>time() to update imu_tracker
+   */
   while (it != imu_data_.end() && it->time < time) {
     imu_tracker->Advance(it->time);
     imu_tracker->AddImuLinearAccelerationObservation(it->linear_acceleration);

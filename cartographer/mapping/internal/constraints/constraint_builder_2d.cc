@@ -296,6 +296,8 @@ void ConstraintBuilder2D::RunWhenDoneCallback() {
     when_done_.reset();
     kQueueLengthMetric->Set(constraints_.size());
   }
+  //DEBUG
+  LOG(WARNING)<<"------------DEBUG-------------ConstraintBuilder2D:(*callback)(result)------";
   (*callback)(result);
 }
 

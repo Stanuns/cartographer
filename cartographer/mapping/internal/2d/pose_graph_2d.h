@@ -63,10 +63,10 @@ namespace mapping {
 // All constraints are between a submap i and a node j.
 class PoseGraph2D : public PoseGraph {
  public:
-  PoseGraph2D(
-      const proto::PoseGraphOptions& options,
-      std::unique_ptr<optimization::OptimizationProblem2D> optimization_problem,
-      common::ThreadPool* thread_pool);
+  PoseGraph2D( //sw
+      const proto::PoseGraphOptions& options, //配置参数
+      std::unique_ptr<optimization::OptimizationProblem2D> optimization_problem, //全局优化主体
+      common::ThreadPool* thread_pool); // 处理全局优化的线程池(可以是一个线程或多个线程)
   ~PoseGraph2D() override;
 
   PoseGraph2D(const PoseGraph2D&) = delete;

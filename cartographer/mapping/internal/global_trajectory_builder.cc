@@ -53,13 +53,13 @@ class GlobalTrajectoryBuilder : public mapping::TrajectoryBuilderInterface {
   GlobalTrajectoryBuilder(const GlobalTrajectoryBuilder&) = delete;
   GlobalTrajectoryBuilder& operator=(const GlobalTrajectoryBuilder&) = delete;
 
-  void AddSensorData(
+  void AddSensorData(//激光信号的处理主要有以下四个过程：1. 2. 3. 4.
       const std::string& sensor_id,
       const sensor::TimedPointCloudData& timed_point_cloud_data) override {
     CHECK(local_trajectory_builder_)
         << "Cannot add TimedPointCloudData without a LocalTrajectoryBuilder.";
     std::unique_ptr<typename LocalTrajectoryBuilder::MatchingResult>
-        matching_result = local_trajectory_builder_->AddRangeData(
+        matching_result = local_trajectory_builder_->AddRangeData(  //1. local_trajectory_builder_->AddRangeData()，结合里程计数据进行激光匹配
             sensor_id, timed_point_cloud_data);
     if (matching_result == nullptr) {
       // The range data has not been fully accumulated yet.
@@ -69,17 +69,17 @@ class GlobalTrajectoryBuilder : public mapping::TrajectoryBuilderInterface {
     std::unique_ptr<InsertionResult> insertion_result;
     if (matching_result->insertion_result != nullptr) {
       kLocalSlamInsertionResults->Increment();
-      auto node_id = pose_graph_->AddNode(
+      auto node_id = pose_graph_->AddNode(  //2. 把匹配的结果加入到全局优化pose_graph_中
           matching_result->insertion_result->constant_data, trajectory_id_,
           matching_result->insertion_result->insertion_submaps);
       CHECK_EQ(node_id.trajectory_id, trajectory_id_);
-      insertion_result = absl::make_unique<InsertionResult>(InsertionResult{
+      insertion_result = absl::make_unique<InsertionResult>(InsertionResult{  //3. 插入到局部地图submap中
           node_id, matching_result->insertion_result->constant_data,
           std::vector<std::shared_ptr<const Submap>>(
               matching_result->insertion_result->insertion_submaps.begin(),
               matching_result->insertion_result->insertion_submaps.end())});
     }
-    if (local_slam_result_callback_) {
+    if (local_slam_result_callback_) {  //4. 执行local_slam_result_callback函数， local_slam_result_callback 的定义在 map_builder_bridge 中
       local_slam_result_callback_(
           trajectory_id_, matching_result->time, matching_result->local_pose,
           std::move(matching_result->range_data_in_local),

@@ -190,6 +190,7 @@ void OptimizationProblem2D::AddImuData(const int trajectory_id,
 void OptimizationProblem2D::AddOdometryData(
     const int trajectory_id, const sensor::OdometryData& odometry_data) {
   odometry_data_.Append(trajectory_id, odometry_data);
+  LOG(WARNING)<<"-------DEBUG-----OptimizationProblem2D::AddOdometryData----------";
 }
 
 void OptimizationProblem2D::AddFixedFramePoseData(

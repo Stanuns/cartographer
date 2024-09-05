@@ -99,7 +99,7 @@ MapBuilder::MapBuilder(const proto::MapBuilderOptions& options)
   }
 }
 
-int MapBuilder::AddTrajectoryBuilder(
+int MapBuilder::AddTrajectoryBuilder( //sw
     const std::set<SensorId>& expected_sensor_ids,
     const proto::TrajectoryBuilderOptions& trajectory_options,
     LocalSlamResultCallback local_slam_result_callback) {
@@ -138,7 +138,7 @@ int MapBuilder::AddTrajectoryBuilder(
     trajectory_builders_.push_back(absl::make_unique<CollatedTrajectoryBuilder>(
         trajectory_options, sensor_collator_.get(), trajectory_id,
         expected_sensor_ids,
-        CreateGlobalTrajectoryBuilder2D(
+        CreateGlobalTrajectoryBuilder2D(  //call_back 具体形式在此定义
             std::move(local_trajectory_builder), trajectory_id,
             static_cast<PoseGraph2D*>(pose_graph_.get()),
             local_slam_result_callback, pose_graph_odometry_motion_filter)));
